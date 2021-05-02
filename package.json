@@ -1,0 +1,16 @@
+{
+  "name": "quoridor",
+  "version": "0.0.0",
+  "description": "Quoridor",
+  "main": "app.js",
+  "author": {
+    "name": ""
+  },
+  "dependencies": {
+    "electron": "^12.0.6",
+    "path": "^0.12.7"
+  },
+  "scripts": {
+    "start": "electron ."
+  }
+}
