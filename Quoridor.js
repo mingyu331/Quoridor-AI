@@ -23,16 +23,16 @@ function DrawWall(walls) {
     // orientation == 0: --
     // orientation == 1: |
     ctx.beginPath();
-    ctx.fillStyle = "#156064";
-    ctx.strokeStyle = "#156064";
+    ctx.fillStyle = "#f8e16c";
+    ctx.strokeStyle = "#f8e16c";
     for (let i = 0; i < walls[0].length; i++) {
         if (!walls[0][i][2]) ctx.rect(80 * (walls[0][i][0]) + 80, 80 * (walls[0][i][1]) + 60, 140, 20);
         else ctx.rect(80 * walls[0][i][0] + 60, 80 * walls[0][i][1] + 80, 20, 140);
         ctx.fill();
     }
     ctx.beginPath();
-    ctx.fillStyle = "#ff4200"
-    ctx.strokeStyle = "#ff4200"
+    ctx.fillStyle = "#ff3562"
+    ctx.strokeStyle = "#ff3562"
     for (let i = 0; i < walls[1].length; i++) {
         if (!walls[1][i][2]) ctx.rect(80 * (walls[1][i][0]) + 80, 80 * (walls[1][i][1]) + 60, 140, 20);
         else ctx.rect(80 * walls[1][i][0] + 60, 80 * walls[1][i][1] + 80, 20, 140);
@@ -53,9 +53,6 @@ function DrawPlayer(player) {
     if (!PlayerMovement[0] || (PlayerMovement[1] == 0 && PlayerMovement[0])) ctx.arc(80 * player[1][0] + 30, 80 * player[1][1] + 30, 20, 0, Math.PI * 2, false);
     else if (PlayerMovement[0] && PlayerMovement[1] == 1) ctx.arc(Mouse[0], Mouse[1], 20, 0, Math.PI * 2, false);
     ctx.fill();
-    ctx.beginPath();
-    ctx.rect(80 * (players[0][0]) + 80, 80 * (players[0][1]) + 60, 140, 20)
-    ctx.fill()
 }
 
 function MainLoop(time) {
@@ -68,6 +65,7 @@ function MainLoop(time) {
 
 function IncludesList(wall, locX, locY, rot) {
     for (let i = 0; i < wall.length; i++) {
+        console.log(wall[i][0] == locX && wall[i][1] == locY && wall[i][2] == rot);
         if (wall[i][0] == locX && wall[i][1] == locY && wall[i][2] == rot) return true;
     }
     return false;
@@ -105,8 +103,8 @@ function PlaceWall(locX, locY, rot) {
         }
     }
     // change player
-    //if (CurrentPlayer == 0) CurrentPlayer = 1;
-    //else if (CurrentPlayer == 1) CurrentPlayer = 0;
+    if (CurrentPlayer == 0) CurrentPlayer = 1;
+    else if (CurrentPlayer == 1) CurrentPlayer = 0;
 }
 
 function MovePlayer(x, y) {
@@ -114,16 +112,15 @@ function MovePlayer(x, y) {
     var locY = players[CurrentPlayer][1]
     if (x != 0 && y != 0) return false;
     if (x == 0 && y == 0) return false;
-    if (x != 0 && !(IncludesList(walls[0], locX + (x-1)/2, locY - 1, true) || IncludesList(walls[0], locX + (x-1)/2, locY - 2, true) ||
-        IncludesList(walls[1], locX + (x-1)/2, locY - 1, true) || IncludesList(walls[0], locX + (x-1)/2, locY - 2, true))) {
-        players[CurrentPlayer][0] += x;
-    }
-    if (y != 0 && !(IncludesList(walls[0], locX + 1, locY + (3 + y) / 2, false) || IncludesList(walls[0], locX, locY + (3 + y) / 2, false) ||
-        IncludesList(walls[1], locX + 1, locY + (3 + y) / 2, false) || IncludesList(walls[0], locX, locY + (3 + y) / 2, false))) {
-        players[CurrentPlayer][1] += y;
-    }
-    //if (CurrentPlayer == 0) CurrentPlayer = 1;
-    //else if (CurrentPlayer == 1) CurrentPlayer = 0;
+
+    if (x == 1 && !(IncludesList(walls[0], locX, locY - 1, true) || IncludesList(walls[0], locX, locY - 2, true))) players[CurrentPlayer][0] += 1;
+    else if (x == -1 && !(IncludesList(walls[0], locX - 1, locY - 1, true) || IncludesList(walls[0], locX, locY - 2, true))) players[CurrentPlayer][0] -= 1;
+    else if (y == 1 && !(IncludesList(walls[0], locX - 1, locY, false) || IncludesList(walls[0], locX - 2, locY, false))) players[CurrentPlayer][1] += 1;
+    else if (y == -1 && !(IncludesList(walls[0], locX - 1, locY - 1, false) || IncludesList(walls[0], locX - 2, locY - 1, false))) players[CurrentPlayer][1] -= 1;
+    else return false;
+
+    if (CurrentPlayer == 0) CurrentPlayer = 1;
+    else if (CurrentPlayer == 1) CurrentPlayer = 0;
 }
 
 // setup
@@ -144,9 +141,9 @@ function QuoridorSetup() {
         else {
             if (!PlayerMovement[0]) {
                 // move player
-                if ((clickX == players[0][0] && clickY == players[0][1]) || (clickX == players[1][0] && clickY == players[1][1])) PlayerMovement[0] = true;
-                if (clickX == players[0][0] && clickY == players[0][1]) PlayerMovement[1] = 0;
-                if (clickX == players[1][0] && clickY == players[1][1]) PlayerMovement[1] = 1;
+                if ((clickX == players[0][0] && clickY == players[0][1] && CurrentPlayer == 0) || (clickX == players[1][0] && clickY == players[1][1] && CurrentPlayer == 1)) PlayerMovement[0] = true;
+                if (clickX == players[0][0] && clickY == players[0][1] && CurrentPlayer == 0) PlayerMovement[1] = 0;
+                if (clickX == players[1][0] && clickY == players[1][1] && CurrentPlayer == 1) PlayerMovement[1] = 1;
             }
             else {
                 // change player location
