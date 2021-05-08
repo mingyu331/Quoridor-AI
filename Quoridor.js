@@ -6,6 +6,7 @@ var PlayerMovement = [false, 0];
 // PlayerMovement[0]: is currently moving
 // playerMovement[1]: what player is moving
 var Mouse = [0, 0];
+var CurrentGameList = [];
 
 function DrawBackground() {
     ctx.beginPath();
@@ -60,12 +61,12 @@ function MainLoop(time) {
     DrawBackground();
     DrawWall(walls);
     DrawPlayer(players);
+    CurrentGameList = GetGrid(walls);
     window.requestAnimationFrame(MainLoop);
 }
 
 function IncludesList(wall, locX, locY, rot) {
     for (let i = 0; i < wall.length; i++) {
-        console.log(wall[i][0] == locX && wall[i][1] == locY && wall[i][2] == rot);
         if (wall[i][0] == locX && wall[i][1] == locY && wall[i][2] == rot) return true;
     }
     return false;
@@ -87,6 +88,7 @@ function PlaceWall(locX, locY, rot) {
                 )) {
                     walls[CurrentPlayer].push([locX, locY, rot]);
                 }
+                else return false;
             }
             else if (!rot) {
                 if (!(
@@ -99,12 +101,14 @@ function PlaceWall(locX, locY, rot) {
                 )) {
                     walls[CurrentPlayer].push([locX, locY, rot]);
                 }
+                else return false;
             }
         }
     }
     // change player
     if (CurrentPlayer == 0) CurrentPlayer = 1;
     else if (CurrentPlayer == 1) CurrentPlayer = 0;
+    return true;
 }
 
 function MovePlayer(x, y) {
@@ -121,6 +125,74 @@ function MovePlayer(x, y) {
 
     if (CurrentPlayer == 0) CurrentPlayer = 1;
     else if (CurrentPlayer == 1) CurrentPlayer = 0;
+}
+
+function GetGrid(wall) {
+    var grid = [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ];
+    for (let i = 0; i < walls[0].length; i++) {
+        if (wall[0][i][2] == true) {
+            console.log(wall[0][i])
+            grid[wall[0][i][1] * 2 + 2][wall[0][i][0] * 2 + 1] = 1;
+            grid[wall[0][i][1] * 2 + 4][wall[0][i][0] * 2 + 1] = 1;
+        }
+        else {
+            grid[wall[0][i][1] * 2 + 1][wall[0][i][0] * 2 + 2] = 1;
+            grid[wall[0][i][1] * 2 + 1][wall[0][i][0] * 2 + 4] = 1;
+        }
+    }
+    for (let i = 0; i < wall[1].length; i++) {
+        if (wall[1][i][2] == true) {
+            grid[wall[1][i][1] * 2 + 2][wall[1][i][0] * 2 + 1] = 1;
+            grid[wall[1][i][1] * 2 + 4][wall[1][i][0] * 2 + 1] = 1;
+        }
+        else {
+            grid[wall[1][i][1] * 2 + 1][wall[1][i][0] * 2 + 2] = 1;
+            grid[wall[1][i][1] * 2 + 1][wall[1][i][0] * 2 + 4] = 1;
+        }
+    }
+    
+    // render grid
+    ctx.beginPath();
+    ctx.strokeStyle = "#f8e16c"
+    ctx.fillStyle = "#f8e16c"
+    ctx.rect(40 * players[0][0] + 750, 40 * players[0][1] + 50, 20, 20);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.strokeStyle = "#ff3562"
+    ctx.fillStyle = "#ff3562"
+    ctx.rect(40 * players[1][0] + 750, 40 * players[1][1] + 50, 20, 20);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.stroke = "#777777"
+    ctx.fillStyle = "#777777";
+    for (let y = 0; y < 17; y++) {
+        for (let x = 0; x < 17; x++) {
+            if (grid[y][x] == 1) {
+                ctx.rect(20 * x + 750, 20 * y + 50, 20, 20);
+                ctx.fill();
+            }
+            
+        }
+    }
+    return grid;
 }
 
 // setup
@@ -151,6 +223,7 @@ function QuoridorSetup() {
                 PlayerMovement[0] = false;
             }
         }
+        if (CurrentPlayer == 1) AI_Move();
     });
 
     canvas.addEventListener('mousemove', (event) => {
