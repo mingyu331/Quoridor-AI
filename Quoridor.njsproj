@@ -33,9 +33,6 @@
     <Content Include="index.html">
       <SubType>Code</SubType>
     </Content>
-    <Content Include="MovementOutput.js">
-      <SubType>Code</SubType>
-    </Content>
     <Content Include="package.json" />
     <Content Include="pathfinding-browser.min.js" />
     <Content Include="preload.js">
@@ -44,10 +41,10 @@
     <Content Include="Quoridor.js">
       <SubType>Code</SubType>
     </Content>
-    <Content Include="README.md" />
-    <Content Include="TenserFlowAI.js">
+    <Content Include="Quoridor_AI.js">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="README.md" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
 </Project>

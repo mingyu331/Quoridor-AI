@@ -62,6 +62,7 @@ function MainLoop(time) {
     DrawWall(walls);
     DrawPlayer(players);
     CurrentGameList = GetGrid(walls);
+    AI_Move();
     window.requestAnimationFrame(MainLoop);
 }
 
@@ -223,7 +224,6 @@ function QuoridorSetup() {
                 PlayerMovement[0] = false;
             }
         }
-        if (CurrentPlayer == 1) AI_Move();
     });
 
     canvas.addEventListener('mousemove', (event) => {
